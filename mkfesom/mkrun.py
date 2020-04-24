@@ -162,14 +162,15 @@ def find_machine(paths):
     for host in paths:
         if 'lnodename' in paths[host]:
             for pattern in paths[host]['lnodename']:
+                print(machine)
                 if re.match(pattern, socket.gethostname()):
-                    machine = host
-                    break
+                    print('worked')
+                    if machine is None:
+                        machine = host
                 elif re.match(pattern, socket.getfqdn()):
-                    machine = host
-                    break
-                else:
-                    machine = None
+                    if machine is None:
+                        machine = host
+
     if machine == None:
         print("""Your hostname is {}.
         No matching host patterns was found in settings/paths.yml.
