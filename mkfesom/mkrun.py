@@ -164,15 +164,17 @@ def find_machine(paths):
             for pattern in paths[host]['lnodename']:
                 if re.match(pattern, socket.gethostname()):
                     machine = host
+                    break
                 elif re.match(pattern, socket.getfqdn()):
                     machine = host
+                    break
                 else:
                     machine = None
     if machine == None:
         print("""Your hostname is {}.
-        No matching host patterns was foind in ./example/paths.yml.
+        No matching host patterns was found in settings/paths.yml.
         Please provide name of the host explicitly with -m command,
-        or add corresponding host pattern to ./example/paths.yml.""".format(
+        or add corresponding host pattern to settings/paths.yml.""".format(
             socket.gethostname()))
         exit()
     else:
@@ -337,16 +339,12 @@ def mkrun():
     #     runconf = yaml.load(f)
     # print(runconf)
 
-def he():
-    import pkg_resources
-    print(pkg_resources.resource_string(__name__, "foo.dat"))
 
 if __name__ == "__main__":
-    
     # args = parser.parse_args()
     # args.func(args)
-    # mkrun()
-    he()
+    mkrun()
+
 
 # try:
 #     run_name = sys.argv[1]
