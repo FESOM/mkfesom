@@ -44,6 +44,8 @@ setup(
     keywords='mkfesom',
     name='mkfesom',
     packages=find_packages(include=['mkfesom']),
+    package_dir={'mypkg': 'mkfesom'},
+    package_data={'': ['*.yml']},
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,

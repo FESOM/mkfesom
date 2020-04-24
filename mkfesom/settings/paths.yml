@@ -14,6 +14,7 @@ ollie:
 mycomp:
     lnodename:
         - 'vpn*'
+        - 'MacBook-Pro*'
     meshes:
         core: /Users/koldunovn/FESOM/FESOM2_minimal_input/mesh/CORE/
         pi: /Users/koldunovn/FESOM/FESOM2_minimal_input/mesh/pi

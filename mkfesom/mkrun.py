@@ -7,11 +7,14 @@ import yaml
 from collections import OrderedDict
 import re
 import socket
+import pkg_resources
 
 # this part is from https://stackoverflow.com/a/55301129
 # allows to expand environment variables in paths
 # Note that paths shouls not be surrouned by quatation marks
 # otherwise they are treated like strings.
+
+
 path_matcher = re.compile(r'.*\$\{([^}^{]+)\}.*')
 
 
@@ -242,6 +245,10 @@ def mkrun():
 
     args = parser.parse_args()
 
+    if not os.path.exists('./config/namelist.config'):
+        raise FileNotFoundError('There is no ./config/namelist.config file. \n\
+            Are you sure you in the FESOM2 directory?')
+
     work_path = './work_{}'.format(args.runname)
     create_workpath(work_path)
 
@@ -256,10 +263,14 @@ def mkrun():
         newbin = 'bin_{}'.format(args.runname)
         create_workpath(newbin)
 
-    paths = read_yml('./examples/paths.yml')
+    paths_path = pkg_resources.resource_filename(__name__, 'settings/paths.yml')
+    paths = read_yml(paths_path)
     # print(paths['ollie']['meshes'])
-    config = read_yml('./examples/{}/setup.yml'.format(args.parent))
-    forcings = read_yml('./examples/forcings.yml')
+    setup_path = pkg_resources.resource_filename(__name__, 'settings/{}/setup.yml'.format(args.parent))
+    config = read_yml(setup_path)
+
+    forcings_path = pkg_resources.resource_filename(__name__, 'settings/forcings.yml')
+    forcings = read_yml(forcings_path)
     forcing = forcings[config['forcing']]
     # print(runconf['namelist.config'])
 
@@ -326,11 +337,16 @@ def mkrun():
     #     runconf = yaml.load(f)
     # print(runconf)
 
+def he():
+    import pkg_resources
+    print(pkg_resources.resource_string(__name__, "foo.dat"))
 
 if __name__ == "__main__":
+    
     # args = parser.parse_args()
     # args.func(args)
-    mkrun()
+    # mkrun()
+    he()
 
 # try:
 #     run_name = sys.argv[1]
