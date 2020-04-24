@@ -1,0 +1,25 @@
+ollie:
+    lnodename:
+        - 'ollie0'
+        - 'ollie1'
+    meshes:
+        core: /path/to/core/
+        bold: /path/to/bold/
+        pi: /path/to/bold/
+    forcing:
+        CORE2: /path/to/forcing/core
+        JRA55: /path/to/forcing/JRA55
+    opath:
+        opath:
+mycomp:
+    lnodename:
+        - 'vpn*'
+    meshes:
+        core: /Users/koldunovn/FESOM/FESOM2_minimal_input/mesh/CORE/
+        pi: /Users/koldunovn/FESOM/FESOM2_minimal_input/mesh/pi
+    forcing:
+        CORE2: /Users/koldunovn/FESOM/FESOM2_minimal_input/input/CORE2/
+    clim:
+        phc: /Users/koldunovn/FESOM/FESOM2_minimal_input/input/phc3.0/
+    opath:
+        opath: ../results/${USER}/
