@@ -61,7 +61,7 @@ def meshpath(paths, config, machine):
         print(
             'Path to the mesh {} is specified, but it does not exist on this machine.'
             .format(config['mesh']))
-    return os.path.abspath(mesh_path)
+    return os.path.abspath(mesh_path) + os.path.sep
 
 
 def resultpath(paths, config, machine, runname):
@@ -87,7 +87,7 @@ def resultpath(paths, config, machine, runname):
             print('The script will end here.')
             exit()
 
-    return os.path.abspath(result_path)
+    return os.path.abspath(result_path) + os.path.sep
 
 
 def climatedatapath(paths, config, machine):
@@ -105,7 +105,7 @@ def climatedatapath(paths, config, machine):
         print('There is no {} file in Climate data path ({})'.format(
             config['clim']['file'], climate_data_path))
 
-    return os.path.abspath(climate_data_path)
+    return os.path.abspath(climate_data_path) + os.path.sep
 
 
 def forcing_addpaths(paths, config, forcing, machine):

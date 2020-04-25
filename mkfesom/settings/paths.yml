@@ -1,16 +1,18 @@
 ollie:
     lnodename:
-        - 'ollie0'
-        - 'ollie1'
+        - 'ollie0*'
+        - 'ollie1*'
     meshes:
-        core: /path/to/core/
-        bold: /path/to/bold/
-        pi: /path/to/bold/
+        core: /work/ollie/pscholz/mesh_fesom2.0/core2_meanz/
+        bold: /work/ollie/nkolduno/meshes/BOLD_RT_FIXED/
+        pi: /work/ollie/nkolduno/meshes/pi_mesh/
     forcing:
-        CORE2: /path/to/forcing/core
-        JRA55: /path/to/forcing/JRA55
+        CORE2: /work/ollie/dsein/input/forcing/
+        JRA55: /work/ollie/clidyn/forcing/JRA55-do-v1.4.0/
+    clim:
+        phc: /work/ollie/dsidoren/input/hydrography/phc3.0/
     opath:
-        opath:
+        opath: /work/ollie/${USER}/
 mycomp:
     lnodename:
         - 'vpn*'
