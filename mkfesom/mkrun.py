@@ -150,10 +150,11 @@ def apply_forcing_switches(patch_nml, forcing_related_switches, namelist_name):
                     )
     return patch_nml
 
+
 def create_fesom_clock(result_path, path_to_namelistconfig):
     nml = f90nml.read(path_to_namelistconfig)
     timenew = nml['clockinit']['timenew']
-    daynew  = nml['clockinit']['daynew']
+    daynew = nml['clockinit']['daynew']
     yearnew = nml['clockinit']['yearnew']
 
     fl = open(os.path.join(result_path, 'fesom.clock'), 'w')
@@ -161,6 +162,7 @@ def create_fesom_clock(result_path, path_to_namelistconfig):
     fl.write(f'{timenew} {daynew} {yearnew} \n')
 
     fl.close()
+
 
 def parce_io(filename):
     iolist = f90nml.read(filename)['nml_list']['io_list']
@@ -193,12 +195,12 @@ def simple_patch(config, work_path, namelist):
     if namelist in config:
         patch_nml = config[namelist]
         if patch_nml == None:
-            copy('./config/namelist.oce', '{}/{}'.format(work_path, namelist))
+            copy('./config/{}'.format(namelist), '{}/{}'.format(work_path, namelist))
         else:
-            f90nml.patch('./config/namelist.oce', patch_nml,
+            f90nml.patch('./config/{}'.format(namelist), patch_nml,
                          '{}/{}'.format(work_path, namelist))
     else:
-        copy('./config/namelist.oce', '{}/{}'.format(work_path, namelist))
+        copy('./config/{}'.format(namelist), '{}/{}'.format(work_path, namelist))
 
 
 def find_machine(paths):
