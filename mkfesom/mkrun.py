@@ -135,13 +135,32 @@ def apply_forcing_switches(patch_nml, forcing_related_switches, namelist_name):
             if section not in patch_nml:
                 patch_nml[section] = {}
             for switch in forcing_related_switches[namelist_name][section]:
-                patch_nml[section][switch] = forcing_related_switches[
-                    namelist_name][section][switch]
-                print(
-                    f'The {switch} parameter in the {namelist_name} was changed according to the changes reqired by the forcing.'
-                )
+                # values from experiment setup has priority
+                if switch in patch_nml[section]:
+                    print(
+                        f'The {switch} parameter in the {namelist_name} has different recomended value in the forcing configuration: ({forcing_related_switches[namelist_name][section][switch]}). I assume you know what you are doing and keep the value from experiment setup ({patch_nml[section][switch]}).'
+                    )
+                # if switch is not explicitly set in the experiment setup,
+                # we change it to recomended value from the forcing.
+                else:
+                    patch_nml[section][switch] = forcing_related_switches[
+                        namelist_name][section][switch]
+                    print(
+                        f'The {switch} parameter in the {namelist_name} was changed according to the changes reqired by the forcing.'
+                    )
     return patch_nml
 
+def create_fesom_clock(result_path, path_to_namelistconfig):
+    nml = f90nml.read(path_to_namelistconfig)
+    timenew = nml['clockinit']['timenew']
+    daynew  = nml['clockinit']['daynew']
+    yearnew = nml['clockinit']['yearnew']
+
+    fl = open(os.path.join(result_path, 'fesom.clock'), 'w')
+    fl.write(f'{timenew} {daynew} {yearnew} \n')
+    fl.write(f'{timenew} {daynew} {yearnew} \n')
+
+    fl.close()
 
 def parce_io(filename):
     iolist = f90nml.read(filename)['nml_list']['io_list']
@@ -187,9 +206,7 @@ def find_machine(paths):
     for host in paths:
         if 'lnodename' in paths[host]:
             for pattern in paths[host]['lnodename']:
-                print(machine)
                 if re.match(pattern, socket.gethostname()):
-                    print('worked')
                     if machine is None:
                         machine = host
                 elif re.match(pattern, socket.getfqdn()):
@@ -324,8 +341,8 @@ def mkrun():
     patch_nml = config['namelist.config']
     patch_nml['paths'] = {}
     patch_nml['paths']['MeshPath'] = meshpath(paths, config, machine)
-    patch_nml['paths']['ResultPath'] = resultpath(paths, config, machine,
-                                                  args.runname)
+    result_path = resultpath(paths, config, machine, args.runname)
+    patch_nml['paths']['ResultPath'] = result_path
     patch_nml['paths']['ClimateDataPath'] = climatedatapath(
         paths, config, machine)
 
@@ -335,6 +352,7 @@ def mkrun():
     f90nml.patch('./config/namelist.config', patch_nml,
                  '{}/namelist.config'.format(work_path))
 
+    create_fesom_clock(result_path, '{}/namelist.config'.format(work_path))
 
     simple_patch(config, work_path, 'namelist.oce')
     simple_patch(config, work_path, 'namelist.ice')

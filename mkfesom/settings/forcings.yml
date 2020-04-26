@@ -114,6 +114,8 @@ JRA55:
     # forcing related modifications in other namelists
     # (only namelist.config and namelist.ice supported for now).
     namelist.config:
+        clockinit:
+            yearnew: 1958
         calendar:
             include_fleapyear: True
 
