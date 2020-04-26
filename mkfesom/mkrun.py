@@ -14,7 +14,6 @@ import pkg_resources
 # Note that paths shouls not be surrouned by quatation marks
 # otherwise they are treated like strings.
 
-
 path_matcher = re.compile(r'.*\$\{([^}^{]+)\}.*')
 
 
@@ -118,6 +117,32 @@ def forcing_addpaths(paths, config, forcing, machine):
     return forcing
 
 
+def forcing_additional_switches(forcing):
+    '''Reads additional switches related to other namelists.'''
+
+    forcing_related_switches = {}
+    if 'namelist.config' in forcing:
+        forcing_related_switches['namelist.config'] = forcing[
+            'namelist.config']
+    if 'namelist.ice' in forcing:
+        forcing_related_switches['namelist.ice'] = forcing['namelist.ice']
+    return forcing_related_switches
+
+
+def apply_forcing_switches(patch_nml, forcing_related_switches, namelist_name):
+    if namelist_name in forcing_related_switches:
+        for section in forcing_related_switches[namelist_name]:
+            if section not in patch_nml:
+                patch_nml[section] = {}
+            for switch in forcing_related_switches[namelist_name][section]:
+                patch_nml[section][switch] = forcing_related_switches[
+                    namelist_name][section][switch]
+                print(
+                    f'The {switch} parameter in the {namelist_name} was changed according to the changes reqired by the forcing.'
+                )
+    return patch_nml
+
+
 def parce_io(filename):
     iolist = f90nml.read(filename)['nml_list']['io_list']
     keys = iolist[0::4]
@@ -181,6 +206,7 @@ def find_machine(paths):
     else:
         return machine
 
+
 def runscript_slurm(config, machine, runname, newbin='bin', account=None):
 
     if 'ntasks' in config:
@@ -220,6 +246,7 @@ def runscript_slurm(config, machine, runname, newbin='bin', account=None):
             ofile.write(line)
     ifile.close()
     ofile.close()
+
 
 def mkrun():
     parser = argparse.ArgumentParser(prog="mkrun",
@@ -266,13 +293,16 @@ def mkrun():
         newbin = 'bin_{}'.format(args.runname)
         create_workpath(newbin)
 
-    paths_path = pkg_resources.resource_filename(__name__, 'settings/paths.yml')
+    paths_path = pkg_resources.resource_filename(__name__,
+                                                 'settings/paths.yml')
     paths = read_yml(paths_path)
     # print(paths['ollie']['meshes'])
-    setup_path = pkg_resources.resource_filename(__name__, 'settings/{}/setup.yml'.format(args.parent))
+    setup_path = pkg_resources.resource_filename(
+        __name__, 'settings/{}/setup.yml'.format(args.parent))
     config = read_yml(setup_path)
 
-    forcings_path = pkg_resources.resource_filename(__name__, 'settings/forcings.yml')
+    forcings_path = pkg_resources.resource_filename(__name__,
+                                                    'settings/forcings.yml')
     forcings = read_yml(forcings_path)
     forcing = forcings[config['forcing']]
     # print(runconf['namelist.config'])
@@ -282,6 +312,15 @@ def mkrun():
     else:
         machine = args.machine
 
+    # namelist.forcing (should not be in setup.yml, taken from forcings.yml)
+    forcing = forcing_addpaths(paths, config, forcing, machine)
+    forcing_related_switches = forcing_additional_switches(forcing)
+
+    patch_nml = forcing
+    f90nml.patch('./config/namelist.forcing', patch_nml,
+                 '{}/namelist.forcing'.format(work_path))
+
+    # namelist.config
     patch_nml = config['namelist.config']
     patch_nml['paths'] = {}
     patch_nml['paths']['MeshPath'] = meshpath(paths, config, machine)
@@ -289,18 +328,17 @@ def mkrun():
                                                   args.runname)
     patch_nml['paths']['ClimateDataPath'] = climatedatapath(
         paths, config, machine)
+
+    patch_nml = apply_forcing_switches(patch_nml, forcing_related_switches,
+                                       'namelist.config')
+
     f90nml.patch('./config/namelist.config', patch_nml,
                  '{}/namelist.config'.format(work_path))
+
 
     simple_patch(config, work_path, 'namelist.oce')
     simple_patch(config, work_path, 'namelist.ice')
     simple_patch(config, work_path, 'namelist.cvmix')
-
-    # namelist.forcing (should not be in setup.yml, taken from fercings.yml)
-    forcing = forcing_addpaths(paths, config, forcing, machine)
-    patch_nml = forcing
-    f90nml.patch('./config/namelist.forcing', patch_nml,
-                 '{}/namelist.forcing'.format(work_path))
 
     # namelist.io
     patch_nml = config['namelist.io']
@@ -345,7 +383,6 @@ if __name__ == "__main__":
     # args = parser.parse_args()
     # args.func(args)
     mkrun()
-
 
 # try:
 #     run_name = sys.argv[1]

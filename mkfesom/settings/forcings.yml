@@ -10,7 +10,7 @@ CORE2:
         AOMIP_drag_coeff: False
         ncar_bulk_formulae: True
         ncar_bulk_z_wind: 10.0
-        ncar_bulk_z_tair: 10.0 
+        ncar_bulk_z_tair: 10.0
         ncar_bulk_z_shum: 10.0
     land_ice:
         use_landice_water: False
@@ -67,7 +67,7 @@ JRA55:
         AOMIP_drag_coeff: False
         ncar_bulk_formulae: True
         ncar_bulk_z_wind: 2.0
-        ncar_bulk_z_tair: 2.0 
+        ncar_bulk_z_tair: 2.0
         ncar_bulk_z_shum: 2.0
     land_ice:
         use_landice_water: False
@@ -111,3 +111,9 @@ JRA55:
         runoff_data_source: CORE2
         nm_sss_data_file: PHC2_salx.nc
         sss_data_source: CORE2
+    # forcing related modifications in other namelists
+    # (only namelist.config and namelist.ice supported for now).
+    namelist.config:
+        calendar:
+            include_fleapyear: True
+

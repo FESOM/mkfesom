@@ -22,6 +22,7 @@ mycomp:
         pi: /Users/koldunovn/FESOM/FESOM2_minimal_input/mesh/pi
     forcing:
         CORE2: /Users/koldunovn/FESOM/FESOM2_minimal_input/input/CORE2/
+        JRA55: /Users/koldunovn/FESOM/FESOM2_minimal_input/input/JRA55-do-v1.4.0/
     clim:
         phc: /Users/koldunovn/FESOM/FESOM2_minimal_input/input/phc3.0/
     opath:
