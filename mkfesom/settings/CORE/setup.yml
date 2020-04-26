@@ -1,5 +1,5 @@
 mesh: core
-forcing: JRA55
+forcing: CORE2
 clim:
     type: phc
     file: phc3.0_winter.nc

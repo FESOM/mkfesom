@@ -107,12 +107,12 @@ def climatedatapath(paths, config, machine):
     return os.path.abspath(climate_data_path) + os.path.sep
 
 
-def forcing_addpaths(paths, config, forcing, machine):
+def forcing_addpaths(paths, config, forcing, forcing_name, machine):
     for key in forcing['nam_sbc']:
         if "file" in key:
             # print()
             forcing['nam_sbc'][key] = os.path.join(
-                paths[machine]['forcing'][config['forcing']],
+                paths[machine]['forcing'][forcing_name],
                 forcing['nam_sbc'][key])
     return forcing
 
@@ -291,6 +291,12 @@ def mkrun():
         action="store_true",
         help="If present separate bin directory will be created.",
     )
+    parser.add_argument(
+        "--forcing",
+        "-f",
+        type=str,
+        help="Option to change forcing indicated in the experiment setup.",
+    )
 
     args = parser.parse_args()
 
@@ -323,7 +329,11 @@ def mkrun():
     forcings_path = pkg_resources.resource_filename(__name__,
                                                     'settings/forcings.yml')
     forcings = read_yml(forcings_path)
-    forcing = forcings[config['forcing']]
+    if args.forcing:
+        forcing_name = args.forcing
+    else:
+        forcing_name = config['forcing']
+    forcing = forcings[forcing_name]
     # print(runconf['namelist.config'])
 
     if not args.machine:
@@ -332,7 +342,7 @@ def mkrun():
         machine = args.machine
 
     # namelist.forcing (should not be in setup.yml, taken from forcings.yml)
-    forcing = forcing_addpaths(paths, config, forcing, machine)
+    forcing = forcing_addpaths(paths, config, forcing, forcing_name, machine)
     forcing_related_switches = forcing_additional_switches(forcing)
 
     patch_nml = forcing
