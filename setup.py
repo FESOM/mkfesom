@@ -34,6 +34,7 @@ setup(
     entry_points={
     'console_scripts': [
         'mkrun=mkfesom.mkrun:mkrun',  # command=package.module:function
+        'report=mkfesom.report:report',  # command=package.module:function
     ],
     },
     description="FESOM2 runc creation",
