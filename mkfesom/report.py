@@ -74,7 +74,7 @@ def parce(ifile):
     return dc, CFL_points, stat
 
 def file_age(filename):
-    st=os.stat('./examples/finished.out')
+    st=os.stat(filename)
     age=(time.time()-st.st_mtime)
 
     return(age)
