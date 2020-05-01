@@ -195,12 +195,14 @@ def simple_patch(config, work_path, namelist):
     if namelist in config:
         patch_nml = config[namelist]
         if patch_nml == None:
-            copy('./config/{}'.format(namelist), '{}/{}'.format(work_path, namelist))
+            copy('./config/{}'.format(namelist),
+                 '{}/{}'.format(work_path, namelist))
         else:
             f90nml.patch('./config/{}'.format(namelist), patch_nml,
                          '{}/{}'.format(work_path, namelist))
     else:
-        copy('./config/{}'.format(namelist), '{}/{}'.format(work_path, namelist))
+        copy('./config/{}'.format(namelist),
+             '{}/{}'.format(work_path, namelist))
 
 
 def find_machine(paths):
@@ -265,6 +267,27 @@ def runscript_slurm(config, machine, runname, newbin='bin', account=None):
             ofile.write(line)
     ifile.close()
     ofile.close()
+
+
+def patch_io(config):
+    if 'namelist.io' in config:
+        patch_nml = config['namelist.io']
+        # parce the crazy io_list from default file
+        if (patch_nml is not None):
+            if "nml_list" in patch_nml:
+                io_dict = parce_io('./config/namelist.io')
+                # get the infromation from experiment setup
+                diff_in_vars = patch_nml['nml_list']['io_list']
+                # modify information from original io_list
+                for key in diff_in_vars:
+                    io_dict[key] = diff_in_vars[key]
+                # convert io_list back to the format f90nml can work with (a long list)
+                patch_nml['nml_list']['io_list'] = io_dict2nml(io_dict)
+        else:
+            patch_nml = {}
+    else:
+        patch_nml = {}
+    return patch_nml
 
 
 def mkrun():
@@ -371,16 +394,8 @@ def mkrun():
     simple_patch(config, work_path, 'namelist.cvmix')
 
     # namelist.io
-    patch_nml = config['namelist.io']
-    # parce the crazy io_list from default file
-    io_dict = parce_io('./config/namelist.io')
-    # get the infromation from experiment setup
-    diff_in_vars = patch_nml['nml_list']['io_list']
-    # modify information from original io_list
-    for key in diff_in_vars:
-        io_dict[key] = diff_in_vars[key]
-    # convert io_list back to the format f90nml can work with (a long list)
-    patch_nml['nml_list']['io_list'] = io_dict2nml(io_dict)
+    patch_nml = patch_io(config)
+
     # patch the file
     f90nml.patch('./config/namelist.io', patch_nml,
                  '{}/namelist.io'.format(work_path))
