@@ -34,7 +34,7 @@ def parce(ifile):
         elif "clock restarted at time:" in line:
             dc['restart'] = "/".join(
                 (line.split()[5], line.split()[6], line.split()[7]))
-        elif "WARNING CFLz>1" in line:
+        elif "WARNING CFLz>" in line:
             CFLz_max = line.split('=')[1].split(',')[0]
             mstep = line.split('=')[2].split(',')[0]
             glon = line.split('=')[3].split('/')[0]
