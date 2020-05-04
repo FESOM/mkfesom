@@ -1,0 +1,57 @@
+mesh: pi
+forcing: CORE2
+clim:
+    type: phc
+    file: phc3.0_winter.nc
+ntasks: 2
+time: "00:10:00"
+
+namelist.config:
+    timestep:
+        step_per_day: 96
+        run_length: 1
+        run_length_unit: "d"
+    geometry:
+        force_rotation: False
+    inout:
+        restart_length: 1
+        restart_length_unit: "d"
+
+namelist.oce:
+    oce_dyn:
+        Div_c: 0.5
+        Leith_c: 0.05
+        w_split: True
+
+namelist.ice:
+    ice_dyn:
+        whichEVP: 0
+        evp_rheol_steps: 150
+
+namelist.io:
+    diag_list:
+        ldiag_energy: False
+    nml_list:
+        io_list:
+            "sst       ":
+                freq: 1
+                unit: d
+                prec: 4
+            "a_ice     ":
+                freq: 1
+                unit: d
+                prec: 4
+            "temp      ":
+                freq: 1
+                unit: d
+                prec: 4
+            "salt      ":
+                freq: 1
+                unit: d
+                prec: 4
+
+
+
+
+
+

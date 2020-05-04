@@ -28,3 +28,17 @@ mycomp:
         phc: /Users/koldunovn/FESOM/FESOM2_minimal_input/input/phc3.0/
     opath:
         opath: ../results/${USER}/
+
+docker:
+    lnodename:
+        - ' '
+    meshes:
+        pi: /fesom/pi/
+    forcing:
+        CORE2: /fesom/dCORE2/
+    clim:
+        phc: /fesom/phc3/
+    opath:
+        opath: /fesom/results/
+
+
