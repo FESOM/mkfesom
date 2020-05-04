@@ -8,6 +8,7 @@ from collections import OrderedDict
 import re
 import socket
 import pkg_resources
+import pandas as pd
 
 # this part is from https://stackoverflow.com/a/55301129
 # allows to expand environment variables in paths
@@ -401,6 +402,13 @@ def mkrun():
                  '{}/namelist.io'.format(work_path))
 
     runscript_slurm(config, machine, args.runname, newbin, account=None)
+
+    if 'fcheck' in config:
+        fcheck = {}
+        fcheck['fcheck'] = config['fcheck']
+        df = pd.DataFrame(fcheck)
+        df.to_csv(f'{work_path}/fcheck_values.csv')
+
     # patch_nml = {'timestep':
     #                    {'step_per_day': step_per_day,
     #                     'run_length': run_lenghth,

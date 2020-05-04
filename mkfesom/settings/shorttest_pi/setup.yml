@@ -50,6 +50,12 @@ namelist.io:
                 unit: d
                 prec: 4
 
+fcheck:
+    a_ice: 0.31723237
+    salt: 23.873995
+    temp: 3.7243884
+    sst: 8.527925
+
 
 
 

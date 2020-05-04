@@ -11,7 +11,7 @@ from setuptools import setup, find_packages
 # with open('HISTORY.rst') as history_file:
 #     history = history_file.read()
 
-requirements = ['numpy', 'pandas', 'pyyaml', 'f90nml', 'tabulate']
+requirements = ['numpy', 'pandas', 'pyyaml', 'f90nml', 'tabulate', 'netCDF4']
 
 setup_requirements = ['pytest-runner', ]
 
@@ -35,7 +35,7 @@ setup(
     'console_scripts': [
         'mkrun=mkfesom.mkrun:mkrun',  # command=package.module:function
         'report=mkfesom.report:report',  # command=package.module:function
-        'monitor=mkfesom.monitor:monitor',
+        'fcheck=mkfesom.fcheck:fcheck',
     ],
     },
     description="FESOM2 runc creation",

@@ -2,7 +2,8 @@ import f90nml
 import os
 import argparse
 import glob
-# import pyfesom2 as pf
+from netCDF4 import Dataset
+from pytest import approx
 
 
 def find_last_year(path, var, runid='fesom'):
@@ -15,18 +16,10 @@ def find_last_year(path, var, runid='fesom'):
     return int(last_year)
 
 
-def monitor():
-    parser = argparse.ArgumentParser(prog="monitor",
-                                     description="Monitor FESOM2 experiment.")
+def fcheck():
+    parser = argparse.ArgumentParser(prog="fcheck",
+                                     description="Check FESOM2 experiment data.")
     parser.add_argument("path", help="Path to work directory")
-
-    # parser.add_argument(
-    #     "--log",
-    #     "-l",
-    #     type=str,
-    #     default="fesom2.0.out",
-    #     help="Name of the FESOM2 log file",
-    # )
 
     args = parser.parse_args()
 
@@ -38,28 +31,27 @@ def monitor():
     nml = f90nml.read(nml_config_path)
     MeshPath = nml['paths']['MeshPath']
     ResultPath = nml['paths']['ResultPath']
-    rotation = nml['geometry']['force_rotation']
-
-    if rotation:
-        abg = [0,0,0]
-    else:
-        abg = [50, 15, -90]
+    runid = nml['modelname']['runid']
 
     print(MeshPath)
     print(ResultPath)
+    print(runid)
 
-    # mesh = pf.load_mesh('/Users/koldunovn/PYHTON/DATA/LCORE_MESH/',
-    #                     abg=abg)
-    # for variable in ['salt', 'temp', 'a_ice', 'm_ice']:
-    #     last_year = find_last_year(ResultPath, variable)
-    #     print(last_year)
-    #     data = pf.get_data(ResultPath, variable, last_year, mesh, records=[-1], how=None, compute=False)
-    #     print(data.mean().compute().data)
-    # temperature
+    fcheck_values_path = os.path.join(args.path, 'fcheck_values.csv')
+    if not fcheck_values_path:
+        raise FileNotFoundError(f'Can\'t gind {fcheck_values_path}.')
 
+    ds = pd.read_csv('./fcheck_values.csv', index_col=0)
+
+    last_year = find_last_year(ResultPath, variable, runid)
+    for variable in ds.index:
+        ffile = Dataset(f'{}/{variable}.{runid}.{last_year}.nc')
+        current_value = ffile.variables[variable][:].mean()
+        master_value = ds.loc[variable].values[0]
+        assert current_value == pytest.approx(master_value)
 
 
 if __name__ == "__main__":
     # args = parser.parse_args()
     # args.func(args)
-    monitor()
+    fcheck()
