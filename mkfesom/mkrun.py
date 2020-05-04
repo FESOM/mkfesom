@@ -244,7 +244,11 @@ def runscript_slurm(config, machine, runname, newbin='bin', account=None):
     work_path = './work_{}'.format(runname)
     job_name = 'fes_{}'.format(runname)
 
-    ipath = f'./work/job_{machine}'
+    if os.path.exists(f'./work/job_{machine}'):
+        ipath = f'./work/job_{machine}'
+    else:
+        ipath = f'./work/job_ubuntu'
+
     opath = '{}/job_{}_new'.format(work_path, machine)
 
     ifile = open(ipath, 'r')
