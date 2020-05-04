@@ -35,6 +35,7 @@ setup(
     'console_scripts': [
         'mkrun=mkfesom.mkrun:mkrun',  # command=package.module:function
         'report=mkfesom.report:report',  # command=package.module:function
+        'monitor=mkfesom.monitor:monitor',
     ],
     },
     description="FESOM2 runc creation",
