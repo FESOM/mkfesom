@@ -14,6 +14,25 @@ ollie:
         phc: /work/ollie/dsidoren/input/hydrography/phc3.0/
     opath:
         opath: /work/ollie/${USER}/
+
+mistral:
+    lnodename:
+        - 'mlogin*'
+        - 'mistralpp*'
+    meshes:
+        core: /pool/data/AWICM/FESOM2/MESHES/CORE2/
+        bold: /pool/data/AWICM/FESOM2/MESHES/BOLD_RT_FIXED/
+        pi: /pool/data/AWICM/FESOM2/MESHES/pi_mesh/
+        farc: /mnt/lustre01/work/ab0995/a270088/meshes/farc_sorted/
+    forcing:
+        CORE2: /pool/data/AWICM/FESOM2/FORCING/CORE2/
+        JRA55: /pool/data/AWICM/FESOM2/FORCING/JRA55-do-v1.4.0/
+    clim:
+        phc: /pool/data/AWICM/FESOM2/INITIAL/phc3.0/
+    opath:
+        opath: /scratch/a/${USER}/
+
+
 mycomp:
     lnodename:
         - 'vpn*'
