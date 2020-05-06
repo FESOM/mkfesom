@@ -21,6 +21,14 @@ def fcheck():
                                      description="Check FESOM2 experiment data.")
     parser.add_argument("path", help="Path to work directory")
 
+    parser.add_argument(
+        "--abs",
+        "-a",
+        type=float,
+        default=1e-12,
+        help="Absolute tolerance",
+    )
+
     args = parser.parse_args()
 
     nml_config_path = os.path.join(args.path, 'namelist.config')
@@ -46,10 +54,9 @@ def fcheck():
         master_value = ds.loc[variable].values[0]
         print(f"Variable: {variable}, current_value: {current_value}, master_value: {master_value}")
         try:
-            assert current_value == approx(master_value)
+            assert current_value == approx(master_value, abs = args.abs)
         except:
             raise AssertionError(f'For {variable} we expect {master_value}. Got {current_value} instead.')
-    print()
 
 if __name__ == "__main__":
     # args = parser.parse_args()
