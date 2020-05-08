@@ -257,7 +257,7 @@ def runscript_slurm(config, machine, runname, newbin='bin', account=None):
     for line in ifile.readlines():
         if line.startswith('#SBATCH --job-name'):
             ofile.write('#SBATCH --job-name={}\n'.format(job_name))
-        elif line.startswith('#SBATCH --ntasks'):
+        elif line.startswith('#SBATCH --ntasks='):
             if ntasks:
                 ofile.write('#SBATCH --ntasks={}\n'.format(ntasks))
         elif line.startswith('#SBATCH --time'):
@@ -405,7 +405,7 @@ def mkrun():
     f90nml.patch('./config/namelist.io', patch_nml,
                  '{}/namelist.io'.format(work_path))
 
-    runscript_slurm(config, machine, args.runname, newbin, account=None)
+    runscript_slurm(config, machine, args.runname, newbin, account=account)
 
     if 'fcheck' in config:
         fcheck = {}
