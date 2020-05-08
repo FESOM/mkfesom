@@ -90,6 +90,13 @@ def report():
         default="fesom2.0.out",
         help="Name of the FESOM2 log file",
     )
+    parser.add_argument(
+        "--cfl",
+        "-c",
+        action='store_true',
+        help="Whether to iprint CFL information.",
+    )
+
 
     args = parser.parse_args()
     logfile = os.path.join(args.path, args.log)
@@ -97,23 +104,25 @@ def report():
     age = file_age(logfile)
 
     print('\n')
-    print(f'File {logfile} was accessed {int(age)} sec ago \n')
+    print(os.path.abspath(args.path))
+    print(f'File {os.path.basename(logfile)} was accessed {int(age)} sec ago')
     if len(stat) > 0:
         print(pd.DataFrame(stat).T.iloc[[0, -1]].to_markdown())
-        print('\n')
+        #print('\n')
     else:
         print("No info on timesteps yet. \n")
 
     print(pd.DataFrame(dc, index=[' ']).to_markdown())
-    print('\n')
+    #print('\n')
     # pp.pprint(CFL)
     # pp.pprint(dc)
-    if CFL_points is not None:
-        print(
-            CFL_points.T.sort_values('occurence',
-                                     ascending=False).head().to_markdown())
-    else:
-        print('No CFL conditions, congratulations!')
+    if args.cfl:
+        if CFL_points is not None:
+            print(
+                CFL_points.T.sort_values('occurence',
+                                         ascending=False).head().to_markdown())
+        else:
+            print('No CFL conditions, congratulations!')
 
 
 if __name__ == "__main__":
