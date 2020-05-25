@@ -400,11 +400,13 @@ def mkrun():
 
     # namelist.io
     patch_nml = patch_io(config)
-
     # patch the file
-    f90nml.patch('./config/namelist.io', patch_nml,
+    if patch_nml:
+        f90nml.patch('./config/namelist.io', patch_nml,
                  '{}/namelist.io'.format(work_path))
-
+    else:
+        copy('./config/namelist.io', '{}/namelist.io'.format(work_path))
+        
     runscript_slurm(config, machine, args.runname, newbin, account=account)
 
     if 'fcheck' in config:
