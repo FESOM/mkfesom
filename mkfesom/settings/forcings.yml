@@ -66,9 +66,9 @@ JRA55:
     forcing_bulk:
         AOMIP_drag_coeff: False
         ncar_bulk_formulae: True
-        ncar_bulk_z_wind: 2.0
-        ncar_bulk_z_tair: 2.0
-        ncar_bulk_z_shum: 2.0
+        ncar_bulk_z_wind: 10.0
+        ncar_bulk_z_tair: 10.0
+        ncar_bulk_z_shum: 10.0
     land_ice:
         use_landice_water: False
         landice_start_mon: 5
