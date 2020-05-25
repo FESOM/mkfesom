@@ -50,6 +50,10 @@ def parce(ifile):
                 CFL[lonlat]['glat'] = []
             CFL[lonlat]['mstep'].append(int(mstep))
             CFL[lonlat]['nz'].append(int(nz))
+            try:
+                CFLz_max = float(CFLz_max)
+            except:
+                CFLz_max = 1000
             CFL[lonlat]['CFLz_max'].append(float(CFLz_max))
             CFL[lonlat]['glon'].append(float(glon))
             CFL[lonlat]['glat'].append(float(glat))
@@ -105,7 +109,11 @@ def report():
 
     print('\n')
     print(os.path.abspath(args.path))
-    print(f'File {os.path.basename(logfile)} was accessed {int(age)} sec ago')
+    if int(age) < 100:
+        print(f'File {os.path.basename(logfile)} was accessed {int(age)} sec ago')
+    else:
+        print(f'File {os.path.basename(logfile)} was accessed {int(age)} sec ago. !! CRASH OR FINISH !!')
+
     if len(stat) > 0:
         print(pd.DataFrame(stat).T.iloc[[0, -1]].to_markdown())
         #print('\n')
