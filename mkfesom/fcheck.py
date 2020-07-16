@@ -47,6 +47,7 @@ def fcheck():
 
     ds = pd.read_csv('./fcheck_values.csv', index_col=0)
 
+    valid = True
     for variable in ds.index:
         last_year = find_last_year(ResultPath, variable, runid)
         ffile = Dataset(f'{ResultPath}/{variable}.{runid}.{last_year}.nc')
@@ -56,7 +57,11 @@ def fcheck():
         try:
             assert current_value == approx(master_value, abs = args.abs)
         except:
-            raise AssertionError(f'For {variable} we expect {master_value}. Got {current_value} instead.')
+            print(f'FAIL!!!: For {variable} we expect {master_value}. Got {current_value} instead.')
+            valid = False
+    if not valid:
+        raise AssertionError('One or several tests have failed.')
+
 
 if __name__ == "__main__":
     # args = parser.parse_args()
