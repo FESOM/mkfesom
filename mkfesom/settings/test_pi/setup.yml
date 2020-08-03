@@ -37,25 +37,36 @@ namelist.io:
             "sst       ":
                 freq: 1
                 unit: d
-                prec: 4
+                prec: 8
             "a_ice     ":
                 freq: 1
                 unit: d
-                prec: 4
+                prec: 8
             "temp      ":
                 freq: 1
                 unit: d
-                prec: 4
+                prec: 8
             "salt      ":
                 freq: 1
                 unit: d
-                prec: 4
+                prec: 8
+            "u         ":
+                freq: 1
+                unit: d
+                prec: 8
+            "v         ":
+                freq: 1
+                unit: d
+                prec: 8
 
 fcheck:
-    a_ice: 0.3172354996204376
-    salt: 23.873994827270508
-    temp: 3.724386692047119
-    sst: 8.527884483337402
+    a_ice: 0.3172354666705257
+    salt: 23.87399368211628
+    temp: 3.724386433004687
+    sst: 8.527885124059663
+    u: -0.0013590246454750717
+    v: 0.000886436018956168
+ 
 
 
 
