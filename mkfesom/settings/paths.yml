@@ -55,6 +55,7 @@ docker:
         pi: /fesom/pi/
     forcing:
         CORE2: /fesom/dCORE2/
+        JRA55: /fesom/dJRA55/
     clim:
         phc: /fesom/phc3/
     opath:

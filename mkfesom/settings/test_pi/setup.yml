@@ -1,5 +1,5 @@
 mesh: pi
-forcing: CORE2
+forcing: JRA55
 clim:
     type: phc
     file: phc3.0_winter.nc
@@ -12,7 +12,7 @@ namelist.config:
         run_length: 1
         run_length_unit: "d"
     geometry:
-        force_rotation: False
+        force_rotation: True
     restart_log:
         restart_length: 1
         restart_length_unit: "d"
@@ -26,8 +26,8 @@ namelist.oce:
 
 namelist.ice:
     ice_dyn:
-        whichEVP: 0
-        evp_rheol_steps: 150
+        whichEVP: 1
+        evp_rheol_steps: 120
 
 namelist.io:
     diag_list:

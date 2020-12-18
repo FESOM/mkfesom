@@ -54,6 +54,11 @@ CORE2:
         runoff_data_source: CORE2
         nm_sss_data_file: PHC2_salx.nc
         sss_data_source: CORE2
+    namelist.config:
+        clockinit:
+            yearnew: 1948
+        calendar:
+            include_fleapyear: False
 
 JRA55:
     forcing_exchange_coeff:
