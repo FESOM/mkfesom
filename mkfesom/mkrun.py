@@ -346,16 +346,20 @@ def mkrun():
         newbin = 'bin_{}'.format(args.runname)
         create_workpath(newbin)
 
-    paths_path = pkg_resources.resource_filename(__name__,
-                                                 'settings/paths.yml')
+#    paths_path = pkg_resources.resource_filename(__name__,
+#                                                 'settings/paths.yml')
+    paths_path = './setups/paths.yml'
+
     paths = read_yml(paths_path)
     # print(paths['ollie']['meshes'])
-    setup_path = pkg_resources.resource_filename(
-        __name__, 'settings/{}/setup.yml'.format(args.parent))
+    #setup_path = pkg_resources.resource_filename(
+    #    __name__, 'settings/{}/setup.yml'.format(args.parent))
+    setup_path =  './setups/{}/setup.yml'.format(args.parent)
     config = read_yml(setup_path)
 
-    forcings_path = pkg_resources.resource_filename(__name__,
-                                                    'settings/forcings.yml')
+    #forcings_path = pkg_resources.resource_filename(__name__,
+    #                                                'settings/forcings.yml')
+    forcings_path = './setups/forcings.yml'
     forcings = read_yml(forcings_path)
     if args.forcing:
         forcing_name = args.forcing
