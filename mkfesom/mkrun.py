@@ -99,12 +99,12 @@ def climatedatapath(paths, config, machine):
 
     climate_data_path = os.path.join(
         paths[machine]['clim'][config['clim']['type']])
-    
+
     clim_files = []
     for clim_file in config['clim']['filelist']:
         clim_file_path =  os.path.join(climate_data_path, clim_file)
         clim_files.append(clim_file_path)
-    
+
     for clim_file_path in clim_files:
         if not os.path.exists(clim_file_path):
             print('There is no {} file in Climate data path ({})'.format(
@@ -117,9 +117,10 @@ def forcing_addpaths(paths, config, forcing, forcing_name, machine):
     for key in forcing['nam_sbc']:
         if "file" in key:
             # print()
-            forcing['nam_sbc'][key] = os.path.join(
+            forcing_path = os.path.join(
                 paths[machine]['forcing'][forcing_name],
                 forcing['nam_sbc'][key])
+            forcing['nam_sbc'][key] = os.path.abspath(forcing_path)
     return forcing
 
 
@@ -423,7 +424,7 @@ def mkrun():
                  '{}/namelist.io'.format(work_path))
     else:
         copy('./config/namelist.io', '{}/namelist.io'.format(work_path))
-        
+
     runscript_slurm(config, machine, args.runname, newbin, account=account)
 
     if 'fcheck' in config:
