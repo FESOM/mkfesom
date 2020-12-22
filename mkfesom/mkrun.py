@@ -99,11 +99,16 @@ def climatedatapath(paths, config, machine):
 
     climate_data_path = os.path.join(
         paths[machine]['clim'][config['clim']['type']])
-    clim_file = os.path.join(climate_data_path, config['clim']['file'])
-
-    if not os.path.exists(clim_file):
-        print('There is no {} file in Climate data path ({})'.format(
-            config['clim']['file'], climate_data_path))
+    
+    clim_files = []
+    for clim_file in config['clim']['filelist']:
+        clim_file_path =  os.path.join(climate_data_path, clim_file)
+        clim_files.append(clim_file_path)
+    
+    for clim_file_path in clim_files:
+        if not os.path.exists(clim_file_path):
+            print('There is no {} file in Climate data path ({})'.format(
+                clim_file_path, climate_data_path))
 
     return os.path.abspath(climate_data_path) + os.path.sep
 
@@ -397,6 +402,14 @@ def mkrun():
                  '{}/namelist.config'.format(work_path))
 
     create_fesom_clock(result_path, '{}/namelist.config'.format(work_path))
+
+    if 'oce_init3d' in config['namelist.oce']:
+        config['namelist.oce']['oce_init3d']['filelist'] = config['clim']['filelist']
+        config['namelist.oce']['oce_init3d']['varlist'] = config['clim']['varlist']
+    else:
+        config['namelist.oce']['oce_init3d']={}
+        config['namelist.oce']['oce_init3d']['filelist']= config['clim']['filelist']
+        config['namelist.oce']['oce_init3d']['varlist'] = config['clim']['varlist']
 
     simple_patch(config, work_path, 'namelist.oce')
     simple_patch(config, work_path, 'namelist.ice')
