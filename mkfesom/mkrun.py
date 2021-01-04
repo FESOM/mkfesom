@@ -234,6 +234,11 @@ def find_machine(paths):
     else:
         return machine
 
+def make_executable(path):
+    # taken from https://stackoverflow.com/questions/12791997/how-do-you-do-a-simple-chmod-x-from-within-python
+    mode = os.stat(path).st_mode
+    mode |= (mode & 0o444) >> 2    # copy R bits to X
+    os.chmod(path, mode)
 
 def runscript_slurm(config, machine, runname, newbin='bin', account=None):
 
@@ -278,7 +283,7 @@ def runscript_slurm(config, machine, runname, newbin='bin', account=None):
             ofile.write(line)
     ifile.close()
     ofile.close()
-
+    make_executable(opath)
 
 def patch_io(config):
     if 'namelist.io' in config:
