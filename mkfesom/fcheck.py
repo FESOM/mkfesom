@@ -57,7 +57,7 @@ def fcheck():
         try:
             assert current_value == approx(master_value, abs = args.abs)
         except:
-            print(f'FAIL!!!: DIFFERENCE: {current_value-master_value}. For {variable} we got {current_value}. Got {master_value} instead.')
+            print(f'FAIL!!!: {variable} DIFFERENCE: {current_value-master_value}.\n')
             valid = False
     if not valid:
         raise AssertionError('One or several tests have failed.')
