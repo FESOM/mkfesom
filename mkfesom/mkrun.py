@@ -404,10 +404,17 @@ def mkrun():
 
     create_fesom_clock(result_path, '{}/namelist.config'.format(work_path))
 
-    if 'oce_init3d' in config['namelist.oce']:
-        config['namelist.oce']['oce_init3d']['filelist'] = config['clim']['filelist']
-        config['namelist.oce']['oce_init3d']['varlist'] = config['clim']['varlist']
+    # TODO make it a function
+    if 'namelist.oce' in config:
+        if 'oce_init3d' in config['namelist.oce']:
+            config['namelist.oce']['oce_init3d']['filelist'] = config['clim']['filelist']
+            config['namelist.oce']['oce_init3d']['varlist'] = config['clim']['varlist']
+        else:
+            config['namelist.oce']['oce_init3d']={}
+            config['namelist.oce']['oce_init3d']['filelist']= config['clim']['filelist']
+            config['namelist.oce']['oce_init3d']['varlist'] = config['clim']['varlist']
     else:
+        config['namelist.oce']={}
         config['namelist.oce']['oce_init3d']={}
         config['namelist.oce']['oce_init3d']['filelist']= config['clim']['filelist']
         config['namelist.oce']['oce_init3d']['varlist'] = config['clim']['varlist']
