@@ -322,6 +322,28 @@ def patch_io(config):
         patch_nml = {}
     return patch_nml
 
+def add_ini(config):
+    "Add initial conditions"
+    if "namelist.oce" in config:
+        if "oce_init3d" in config["namelist.oce"]:
+            config["namelist.oce"]["oce_init3d"]["filelist"] = config["clim"][
+                "filelist"
+            ]
+            config["namelist.oce"]["oce_init3d"]["varlist"] = config["clim"]["varlist"]
+        else:
+            config["namelist.oce"]["oce_init3d"] = {}
+            config["namelist.oce"]["oce_init3d"]["filelist"] = config["clim"][
+                "filelist"
+            ]
+            config["namelist.oce"]["oce_init3d"]["varlist"] = config["clim"]["varlist"]
+    else:
+        config["namelist.oce"] = {}
+        config["namelist.oce"]["oce_init3d"] = {}
+        config["namelist.oce"]["oce_init3d"]["filelist"] = config["clim"]["filelist"]
+        config["namelist.oce"]["oce_init3d"]["varlist"] = config["clim"]["varlist"]
+    return config
+
+
 
 def mkrun():
     parser = argparse.ArgumentParser(
@@ -429,26 +451,8 @@ def mkrun():
     )
 
     create_fesom_clock(result_path, "{}/namelist.config".format(work_path))
-
-    # TODO make it a function
-    if "namelist.oce" in config:
-        if "oce_init3d" in config["namelist.oce"]:
-            config["namelist.oce"]["oce_init3d"]["filelist"] = config["clim"][
-                "filelist"
-            ]
-            config["namelist.oce"]["oce_init3d"]["varlist"] = config["clim"]["varlist"]
-        else:
-            config["namelist.oce"]["oce_init3d"] = {}
-            config["namelist.oce"]["oce_init3d"]["filelist"] = config["clim"][
-                "filelist"
-            ]
-            config["namelist.oce"]["oce_init3d"]["varlist"] = config["clim"]["varlist"]
-    else:
-        config["namelist.oce"] = {}
-        config["namelist.oce"]["oce_init3d"] = {}
-        config["namelist.oce"]["oce_init3d"]["filelist"] = config["clim"]["filelist"]
-        config["namelist.oce"]["oce_init3d"]["varlist"] = config["clim"]["varlist"]
-
+    
+    config = add_ini(config)
     simple_patch(config, work_path, "namelist.oce")
     simple_patch(config, work_path, "namelist.ice")
     simple_patch(config, work_path, "namelist.cvmix")
