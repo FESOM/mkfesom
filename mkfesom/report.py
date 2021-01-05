@@ -17,46 +17,47 @@ def parce(ifile):
     fl = open(ifile)
     iterations = []
     residuum = []
-    dc['status'] = "NOT FINISHED"
-    dc['restart'] = "Cold start"
+    dc["status"] = "NOT FINISHED"
+    dc["restart"] = "Cold start"
     for line in fl.readlines():
         if "Runtime for all timesteps :" in line:
-            dc['status'] = "FINISHED"
-            dc['Total time'] = "{} sec, (~{:6.2f}) min".format(
-                line.split()[5],
-                float(line.split()[5]) / 60)
+            dc["status"] = "FINISHED"
+            dc["Total time"] = "{} sec, (~{:6.2f}) min".format(
+                line.split()[5], float(line.split()[5]) / 60
+            )
         elif "STOP" in line:
-            dc['status'] = "Stopped (probably blew up)"
+            dc["status"] = "Stopped (probably blew up)"
         elif "MODEL BLOW UP !!!" in line:
-            dc['status'] = "MODEL BLOWED UP !!!"
+            dc["status"] = "MODEL BLOWED UP !!!"
         elif "time step size is set to" in line:
-            dc['time step'] = float(line.split()[6])
+            dc["time step"] = float(line.split()[6])
         elif "clock restarted at time:" in line:
-            dc['restart'] = "/".join(
-                (line.split()[5], line.split()[6], line.split()[7]))
+            dc["restart"] = "/".join(
+                (line.split()[5], line.split()[6], line.split()[7])
+            )
         elif "WARNING CFLz>" in line:
-            CFLz_max = line.split('=')[1].split(',')[0]
-            mstep = line.split('=')[2].split(',')[0]
-            glon = line.split('=')[3].split('/')[0]
-            glat = line.split('=')[3].split('/')[1].split(',')[0]
-            nz = line.split('=')[4]
+            CFLz_max = line.split("=")[1].split(",")[0]
+            mstep = line.split("=")[2].split(",")[0]
+            glon = line.split("=")[3].split("/")[0]
+            glat = line.split("=")[3].split("/")[1].split(",")[0]
+            nz = line.split("=")[4]
             lonlat = f"{glon}/{glat}"
             if lonlat not in CFL:
                 CFL[lonlat] = OrderedDict()
-                CFL[lonlat]['mstep'] = []
-                CFL[lonlat]['nz'] = []
-                CFL[lonlat]['CFLz_max'] = []
-                CFL[lonlat]['glon'] = []
-                CFL[lonlat]['glat'] = []
-            CFL[lonlat]['mstep'].append(int(mstep))
-            CFL[lonlat]['nz'].append(int(nz))
+                CFL[lonlat]["mstep"] = []
+                CFL[lonlat]["nz"] = []
+                CFL[lonlat]["CFLz_max"] = []
+                CFL[lonlat]["glon"] = []
+                CFL[lonlat]["glat"] = []
+            CFL[lonlat]["mstep"].append(int(mstep))
+            CFL[lonlat]["nz"].append(int(nz))
             try:
                 CFLz_max = float(CFLz_max)
             except:
                 CFLz_max = 1000
-            CFL[lonlat]['CFLz_max'].append(float(CFLz_max))
-            CFL[lonlat]['glon'].append(float(glon))
-            CFL[lonlat]['glat'].append(float(glat))
+            CFL[lonlat]["CFLz_max"].append(float(CFLz_max))
+            CFL[lonlat]["glon"].append(float(glon))
+            CFL[lonlat]["glat"].append(float(glat))
         elif "FESOM step:" in line:
             step = line.split()[2]
             stat[step] = {}
@@ -67,25 +68,26 @@ def parce(ifile):
         CFL_points = pd.DataFrame()
         for i in CFL.items():
             point = pd.DataFrame(i[1])
-            point['occurence'] = int(point.shape[0])
-            CFL_points = pd.concat([CFL_points, point.mean()],
-                                   axis=1,
-                                   sort=False)
+            point["occurence"] = int(point.shape[0])
+            CFL_points = pd.concat([CFL_points, point.mean()], axis=1, sort=False)
     else:
         CFL_points = None
 
     fl.close()
     return dc, CFL_points, stat
 
-def file_age(filename):
-    st=os.stat(filename)
-    age=(time.time()-st.st_mtime)
 
-    return(age)
+def file_age(filename):
+    st = os.stat(filename)
+    age = time.time() - st.st_mtime
+
+    return age
+
 
 def report():
     parser = argparse.ArgumentParser(
-        prog="report", description="Report on FESOM2 experiment.")
+        prog="report", description="Report on FESOM2 experiment."
+    )
     parser.add_argument("path", help="Path to work directory")
     parser.add_argument(
         "--log",
@@ -97,40 +99,43 @@ def report():
     parser.add_argument(
         "--cfl",
         "-c",
-        action='store_true',
+        action="store_true",
         help="Whether to iprint CFL information.",
     )
-
 
     args = parser.parse_args()
     logfile = os.path.join(args.path, args.log)
     dc, CFL_points, stat = parce(logfile)
     age = file_age(logfile)
 
-    print('\n')
+    print("\n")
     print(os.path.abspath(args.path))
     if int(age) < 100:
-        print(f'File {os.path.basename(logfile)} was accessed {int(age)} sec ago')
+        print(f"File {os.path.basename(logfile)} was accessed {int(age)} sec ago")
     else:
-        print(f'File {os.path.basename(logfile)} was accessed {int(age)} sec ago. !! CRASH OR FINISH !!')
+        print(
+            f"File {os.path.basename(logfile)} was accessed {int(age)} sec ago. !! CRASH OR FINISH !!"
+        )
 
     if len(stat) > 0:
         print(pd.DataFrame(stat).T.iloc[[0, -1]].to_markdown())
-        #print('\n')
+        # print('\n')
     else:
         print("No info on timesteps yet. \n")
 
-    print(pd.DataFrame(dc, index=[' ']).to_markdown())
-    #print('\n')
+    print(pd.DataFrame(dc, index=[" "]).to_markdown())
+    # print('\n')
     # pp.pprint(CFL)
     # pp.pprint(dc)
     if args.cfl:
         if CFL_points is not None:
             print(
-                CFL_points.T.sort_values('occurence',
-                                         ascending=False).head().to_markdown())
+                CFL_points.T.sort_values("occurence", ascending=False)
+                .head()
+                .to_markdown()
+            )
         else:
-            print('No CFL conditions, congratulations!')
+            print("No CFL conditions, congratulations!")
 
 
 if __name__ == "__main__":
