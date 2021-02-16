@@ -181,8 +181,8 @@ def create_fesom_clock(result_path, path_to_namelistconfig):
     fl.close()
 
 
-def parce_io(filename):
-    iolist = f90nml.read(filename)["nml_list"]["io_list"]
+def parce_io(filename, section='nml_list', nml_var="io_list"):
+    iolist = f90nml.read(filename)[section][nml_var]
     keys = iolist[0::4]
     freq = iolist[1::4]
     unit = iolist[2::4]
@@ -308,7 +308,7 @@ def patch_io(config):
         # parce the crazy io_list from default file
         if patch_nml is not None:
             if "nml_list" in patch_nml:
-                io_dict = parce_io("./config/namelist.io")
+                io_dict = parce_io("./config/namelist.io", "nml_list", "io_list")
                 # get the infromation from experiment setup
                 diff_in_vars = patch_nml["nml_list"]["io_list"]
                 # modify information from original io_list
@@ -316,6 +316,26 @@ def patch_io(config):
                     io_dict[key] = diff_in_vars[key]
                 # convert io_list back to the format f90nml can work with (a long list)
                 patch_nml["nml_list"]["io_list"] = io_dict2nml(io_dict)
+        else:
+            patch_nml = {}
+    else:
+        patch_nml = {}
+    return patch_nml
+
+def patch_icepack(config):
+    if "namelist.icepack" in config:
+        patch_nml = config["namelist.icepack"]
+        # parce the crazy io_list from default file
+        if patch_nml is not None:
+            if "nml_list_icepack" in patch_nml:
+                io_dict = parce_io("./config/namelist.icepack", "nml_list_icepack", "io_list_icepack")
+                # get the infromation from experiment setup
+                diff_in_vars = patch_nml["nml_list_icepack"]["io_list_icepack"]
+                # modify information from original io_list
+                for key in diff_in_vars:
+                    io_dict[key] = diff_in_vars[key]
+                # convert io_list back to the format f90nml can work with (a long list)
+                patch_nml["nml_list_icepack"]["io_list_icepack"] = io_dict2nml(io_dict)
         else:
             patch_nml = {}
     else:
@@ -456,7 +476,7 @@ def mkrun():
     simple_patch(config, work_path, "namelist.oce")
     simple_patch(config, work_path, "namelist.ice")
     simple_patch(config, work_path, "namelist.cvmix")
-    simple_patch(config, work_path, "namelist.icepack")
+    # simple_patch(config, work_path, "namelist.icepack")
 
     # namelist.io
     patch_nml = patch_io(config)
@@ -467,6 +487,15 @@ def mkrun():
         )
     else:
         copy("./config/namelist.io", "{}/namelist.io".format(work_path))
+        
+    patch_nml = patch_icepack(config)
+    if patch_nml:
+        f90nml.patch(
+            "./config/namelist.icepack", patch_nml, "{}/namelist.icepack".format(work_path)
+        )
+    else:
+        copy("./config/namelist.icepack", "{}/namelist.icepack".format(work_path))
+
 
     runscript_slurm(config, machine, args.runname, newbin, account=account)
 
