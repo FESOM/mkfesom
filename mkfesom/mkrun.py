@@ -451,11 +451,12 @@ def mkrun():
     )
 
     create_fesom_clock(result_path, "{}/namelist.config".format(work_path))
-    
+
     config = add_ini(config)
     simple_patch(config, work_path, "namelist.oce")
     simple_patch(config, work_path, "namelist.ice")
     simple_patch(config, work_path, "namelist.cvmix")
+    simple_patch(config, work_path, "namelist.icepack")
 
     # namelist.io
     patch_nml = patch_io(config)
