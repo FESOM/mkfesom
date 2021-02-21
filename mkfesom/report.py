@@ -40,7 +40,7 @@ def parce(ifile):
             mstep = line.split("=")[2].split(",")[0]
             glon = line.split("=")[3].split("/")[0]
             glat = line.split("=")[3].split("/")[1].split(",")[0]
-            nz = line.split("=")[4]
+            nz = line.split("=")[4].split()[0]
             lonlat = f"{glon}/{glat}"
             if lonlat not in CFL:
                 CFL[lonlat] = OrderedDict()
