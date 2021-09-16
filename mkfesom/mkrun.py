@@ -220,7 +220,10 @@ def simple_patch(config, work_path, namelist):
                 "{}/{}".format(work_path, namelist),
             )
     else:
-        copy("./config/{}".format(namelist), "{}/{}".format(work_path, namelist))
+        try:
+            copy("./config/{}".format(namelist), "{}/{}".format(work_path, namelist))
+        except:
+            print(f"You are trying to copy {namelist} from config, but it does not exist.")
 
 
 def find_machine(paths):
@@ -361,6 +364,24 @@ def add_ini(config):
         config["namelist.oce"]["oce_init3d"] = {}
         config["namelist.oce"]["oce_init3d"]["filelist"] = config["clim"]["filelist"]
         config["namelist.oce"]["oce_init3d"]["varlist"] = config["clim"]["varlist"]
+
+    if "namelist.tra" in config:
+        if "tracer_init3d" in config["namelist.tra"]:
+            config["namelist.tra"]["tracer_init3d"]["filelist"] = config["clim"][
+                "filelist"
+            ]
+            config["namelist.tra"]["tracer_init3d"]["varlist"] = config["clim"]["varlist"]
+        else:
+            config["namelist.tra"]["tracer_init3d"] = {}
+            config["namelist.tra"]["tracer_init3d"]["filelist"] = config["clim"][
+                "filelist"
+            ]
+            config["namelist.tra"]["tracer_init3d"]["varlist"] = config["clim"]["varlist"]
+    else:
+        config["namelist.tra"] = {}
+        config["namelist.tra"]["tracer_init3d"] = {}
+        config["namelist.tra"]["tracer_init3d"]["filelist"] = config["clim"]["filelist"]
+        config["namelist.tra"]["tracer_init3d"]["varlist"] = config["clim"]["varlist"]
     return config
 
 
@@ -476,6 +497,7 @@ def mkrun():
     simple_patch(config, work_path, "namelist.oce")
     simple_patch(config, work_path, "namelist.ice")
     simple_patch(config, work_path, "namelist.cvmix")
+    simple_patch(config, work_path, "namelist.tra")
     # simple_patch(config, work_path, "namelist.icepack")
 
     # namelist.io
