@@ -498,7 +498,6 @@ def mkrun():
     simple_patch(config, work_path, "namelist.ice")
     simple_patch(config, work_path, "namelist.cvmix")
     simple_patch(config, work_path, "namelist.tra")
-    print('hithere2')
     # simple_patch(config, work_path, "namelist.icepack")
 
     # namelist.io
