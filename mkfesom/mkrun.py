@@ -347,23 +347,23 @@ def patch_icepack(config):
 
 def add_ini(config):
     "Add initial conditions"
-    if "namelist.oce" in config:
-        if "oce_init3d" in config["namelist.oce"]:
-            config["namelist.oce"]["oce_init3d"]["filelist"] = config["clim"][
-                "filelist"
-            ]
-            config["namelist.oce"]["oce_init3d"]["varlist"] = config["clim"]["varlist"]
-        else:
-            config["namelist.oce"]["oce_init3d"] = {}
-            config["namelist.oce"]["oce_init3d"]["filelist"] = config["clim"][
-                "filelist"
-            ]
-            config["namelist.oce"]["oce_init3d"]["varlist"] = config["clim"]["varlist"]
-    else:
-        config["namelist.oce"] = {}
-        config["namelist.oce"]["oce_init3d"] = {}
-        config["namelist.oce"]["oce_init3d"]["filelist"] = config["clim"]["filelist"]
-        config["namelist.oce"]["oce_init3d"]["varlist"] = config["clim"]["varlist"]
+    # if "namelist.oce" in config:
+    #     if "oce_init3d" in config["namelist.oce"]:
+    #         config["namelist.oce"]["oce_init3d"]["filelist"] = config["clim"][
+    #             "filelist"
+    #         ]
+    #         config["namelist.oce"]["oce_init3d"]["varlist"] = config["clim"]["varlist"]
+    #     else:
+    #         config["namelist.oce"]["oce_init3d"] = {}
+    #         config["namelist.oce"]["oce_init3d"]["filelist"] = config["clim"][
+    #             "filelist"
+    #         ]
+    #         config["namelist.oce"]["oce_init3d"]["varlist"] = config["clim"]["varlist"]
+    # else:
+    #     config["namelist.oce"] = {}
+    #     config["namelist.oce"]["oce_init3d"] = {}
+    #     config["namelist.oce"]["oce_init3d"]["filelist"] = config["clim"]["filelist"]
+    #     config["namelist.oce"]["oce_init3d"]["varlist"] = config["clim"]["varlist"]
 
     if "namelist.tra" in config:
         if "tracer_init3d" in config["namelist.tra"]:
