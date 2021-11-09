@@ -498,6 +498,7 @@ def mkrun():
     simple_patch(config, work_path, "namelist.ice")
     simple_patch(config, work_path, "namelist.cvmix")
     simple_patch(config, work_path, "namelist.tra")
+    simple_patch(config, work_path, "namelist.dyn")
     # simple_patch(config, work_path, "namelist.icepack")
 
     # namelist.io
